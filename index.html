@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription & Connexion</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f2f2f2; }
+        h2 { color: #333; }
+        form { width: 300px; margin: auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); }
+        input { width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { background-color: blue; color: white; padding: 10px; width: 100%; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: darkblue; }
+        #connexionForm, #logoutButton { display: none; }
+        #userInfo { font-size: 18px; color: green; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <h2>Inscription</h2>
+    <form id="inscriptionForm">
+        <input type="text" id="nom" placeholder="Votre Nom" required><br>
+        <input type="email" id="email" placeholder="Votre Email" required><br>
+        <input type="password" id="password" placeholder="Votre Mot de passe" required><br>
+        <button type="button" onclick="inscrire()">S'inscrire</button>
+    </form>
+
+    <br>
+
+    <button onclick="afficherConnexion()">S'inscrire</button>
+
+    <form id="connexionForm">
+        <h2>Connexion</h2>
+        <input type="email" id="loginEmail" placeholder="Votre Email" required><br>
+        <input type="password" id="loginPassword" placeholder="Votre Mot de passe" required><br>
+        <label><input type="checkbox" id="rememberMe"> Se souvenir de moi</label><br>
+        <button type="button" onclick="connecter()">Se connecter</button>
+        <a href="#" onclick="motDePasseOublie()">Mot de passe oublié?</a>
+    </form>
+
+    <button id="logoutButton" onclick="deconnecter()">Déconnexion</button>
+
+    <div id="userInfo"></div>
+
+    <br>
+    <a href="users.html"><button></button></a>
+
+    <script>
+        function inscrire() {
+            let nom = document.getElementById("nom").value;
+            let email = document.getElementById("email").value;
+            let password = document.getElementById("password").value;
+
+            if (!nom || !email || !password) {
+                alert("Fenoy azafady ny champ rehetra!");
+                return;
+            }
+
+            let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
+            let dejaExiste = utilisateurs.some(user => user.email === email);
+
+            if (dejaExiste) {
+                alert("Email efa ampiasaina!");
+                return;
+            }
+
+            utilisateurs.push({ nom, email, password });
+            localStorage.setItem("utilisateurs", JSON.stringify(utilisateurs));
+
+            alert("Inscription réussie!");
+            document.getElementById("inscriptionForm").reset();
+            afficherConnexion();
+        }
+
+        function afficherConnexion() {
+            document.getElementById("connexionForm").style.display = "block";
+        }
+
+        function connecter() {
+            let email = document.getElementById("loginEmail").value;
+            let password = document.getElementById("loginPassword").value;
+            let rememberMe = document.getElementById("rememberMe").checked;
+
+            let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
+            let utilisateur = utilisateurs.find(user => user.email === email && user.password === password);
+
+            if (utilisateur) {
+                alert("Connexion réussie! Bienvenue, " + utilisateur.nom);
+                
+                if (rememberMe) {
+                    localStorage.setItem("sessionUser", JSON.stringify(utilisateur));
+                } else {
+                    sessionStorage.setItem("sessionUser", JSON.stringify(utilisateur));
+                }
+
+                window.location.href = "https://site-web-asa-en-ligne-m-da-6fzi.vercel.app/";
+            } else {
+                alert("Email ou mot de passe incorrect!");
+            }
+        }
+
+        function deconnecter() {
+            localStorage.removeItem("sessionUser");
+            sessionStorage.removeItem("sessionUser");
+            alert("Déconnexion réussie!");
+            location.reload();
+        }
+    </script>
+
+</body>
+</html>
