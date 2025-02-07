@@ -3,109 +3,460 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscription & Connexion</title>
+    <title>Site d'Investissement</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; background-color: #f2f2f2; }
-        h2 { color: #333; }
-        form { width: 300px; margin: auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); }
-        input { width: 100%; padding: 8px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
-        button { background-color: blue; color: white; padding: 10px; width: 100%; border: none; border-radius: 5px; cursor: pointer; }
-        button:hover { background-color: darkblue; }
-        #connexionForm, #logoutButton { display: none; }
-        #userInfo { font-size: 18px; color: green; margin-top: 20px; }
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #balance {
+            margin: 20px;
+        }
+        #actions {
+            margin: 20px;
+        }
+        #form_depot, #form_retrait {
+            margin: 20px;
+            display: none;
+        }
+        #work_status {
+            margin: 20px;
+            display: none;
+            font-size: 18px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        #access_code_form {
+            margin: 20px;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #007bff, #00c6ff);
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            animation: fadeInDown 1s ease-in-out;
+        }
+
+        /* Balance Section */
+        #balance {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            font-size: 20px;
+            margin-bottom: 20px;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+
+        /* Buttons */
+        button {
+            background: linear-gradient(135deg, #ff8c00, #ff3d00);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 10px;
+            display: inline-block;
+        }
+
+        button:hover {
+            transform: scale(1.1);
+            box-shadow: 0px 5px 15px rgba(255, 61, 0, 0.5);
+        }
+
+        /* Forms */
+        .form-container {
+            display: none;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            margin: 20px auto;
+            animation: slideIn 0.5s ease-in-out;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            transform: scale(1.05);
+            box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Table */
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        th {
+            background: rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+        }
+
+        /* Work Status */
+        #work_status {
+            font-size: 18px;
+            margin-top: 20px;
+            display: none;
+            animation: pulse 1s infinite;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+    </style>
     </style>
 </head>
 <body>
 
-    <h2>Inscription</h2>
-    <form id="inscriptionForm">
-        <input type="text" id="nom" placeholder="Votre Nom" required><br>
-        <input type="email" id="email" placeholder="Votre Email" required><br>
-        <input type="password" id="password" placeholder="Votre Mot de passe" required><br>
-        <button type="button" onclick="inscrire()">S'inscrire</button>
-    </form>
+<h1>Site d'Investissement</h1>
 
-    <br>
+<!-- Section Balance -->
+<div id="balance">
+    <h3>Your Balance: <span id="balance_amount">0$</span></h3>
+</div>
 
-    <button onclick="afficherConnexion()">S'inscrire</button>
+<!-- Actions Depot & Retrait -->
+<div id="actions">
+    <button onclick="showDepotForm()">Depot</button>
+    <button onclick="showRetraitForm()">Retrait</button>
+</div>
 
-    <form id="connexionForm">
-        <h2>Connexion</h2>
-        <input type="email" id="loginEmail" placeholder="Votre Email" required><br>
-        <input type="password" id="loginPassword" placeholder="Votre Mot de passe" required><br>
-        <label><input type="checkbox" id="rememberMe"> Se souvenir de moi</label><br>
-        <button type="button" onclick="connecter()">Se connecter</button>
-        <a href="#" onclick="motDePasseOublie()">Mot de passe oublié?</a>
-    </form>
+<!-- Formulaire Depot -->
+<div id="form_depot">
+    <input type="number" id="depot_amount" placeholder="Montant à déposer">
+    <input type="text " id="email" placeholder="email ">
+    <input type="text" id="payeer_account" value="P1114188343" placeholder="compte PAYEER :P1114188343" disabled>
+    <button onclick="submitDepot()">Valider Depot</button>
+</div>
 
-    <button id="logoutButton" onclick="deconnecter()">Déconnexion</button>
+<!-- Formulaire Retrait -->
+<div id="form_retrait">
+    <input type="number" id="retrait_amount" placeholder="Montant à retirer">
+    <input type="text" id="payeer_address" placeholder="Entrez votre adresse Payeer (pour le retrait)">
+    <button onclick="submitRetrait()">Valider Retrait</button>
+</div>
 
-    <div id="userInfo"></div>
+<!-- Tableau Privee (Access Restricted) -->
+<h3>Transactions (Privée)</h3>
+<div id="access_code_form">
+    <input type="text" id="access_code" placeholder="Entrez le code d'accès">
+    <button onclick="checkAccessCode()">Accéder au Tableau</button>
+</div>
+<table id="admin_table" style="display: none;">
+    <tr>
+        <th>Code Transaction</th>
+        <th>Nom du Client</th>
+        <th>Montant</th>
+        <th>Type</th>
+        <th>Compte Payeer</th>
+        <th>Action</th>
+    </tr>
+    <!-- Transactions data will be added here dynamically -->
+</table>
 
-    <br>
-    <a href="users.html"><button></button></a>
+<button onclick="confirmTransaction()">Confirmer</button>
 
-    <script>
-        function inscrire() {
-            let nom = document.getElementById("nom").value;
-            let email = document.getElementById("email").value;
-            let password = document.getElementById("password").value;
+<!-- Espace Travail -->
+<button id="demarrer_btn" onclick="startWork()">Demarrer</button>
+<div id="work_status">Travail en cours...</div>
 
-            if (!nom || !email || !password) {
-                alert("Fenoy azafady ny champ rehetra!");
-                return;
-            }
+<script>
+// Load balance from localStorage if it exists
+let balance = parseFloat(localStorage.getItem('balance')) || 0;
+document.getElementById("balance_amount").innerText = balance.toFixed(2) + "$";
 
-            let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-            let dejaExiste = utilisateurs.some(user => user.email === email);
+// Load transactions from localStorage if they exist
+let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
+let withdrawalCount = parseInt(localStorage.getItem('withdrawalCount')) || 0;
 
-            if (dejaExiste) {
-                alert("Email efa ampiasaina!");
-                return;
-            }
+// Gains per day - 1.5%
+function calculateDailyGains() {
+    return balance * 0.015; // 1.5% daily
+}
 
-            utilisateurs.push({ nom, email, password });
-            localStorage.setItem("utilisateurs", JSON.stringify(utilisateurs));
+// Function to generate a unique transaction code
+function generateTransactionCode() {
+    return '00001';  // You can replace this with a dynamic code generator if needed
+}
 
-            alert("Inscription réussie!");
-            document.getElementById("inscriptionForm").reset();
-            afficherConnexion();
+// Show Depot Form
+function showDepotForm() {
+    document.getElementById("form_depot").style.display = "block";
+    document.getElementById("form_retrait").style.display = "none";
+}
+
+// Show Retrait Form
+function showRetraitForm() {
+    document.getElementById("form_retrait").style.display = "block";
+    document.getElementById("form_depot").style.display = "none";
+}
+
+// Handle Depot submission
+function submitDepot() {
+    let depotAmount = parseFloat(document.getElementById("depot_amount").value);
+    let payeerAccount = document.getElementById("payeer_account").value;
+    if (depotAmount < 5) {
+        alert("Le montant minimum pour un dépôt est 5$.");
+    } else {
+        let transactionCode = generateTransactionCode();
+        addTransaction(transactionCode, 'Client', depotAmount, 'Depot', payeerAccount);
+        document.getElementById("form_depot").style.display = "none";
+        alert("Depot ajouté au tableau. Veuillez confirmer.");
+    }
+}
+
+/// Handle Retrait submission with daily limit
+function submitRetrait() {
+    let retraitAmount = parseFloat(document.getElementById("retrait_amount").value);
+    let payeerAddress = document.getElementById("payeer_address").value;
+
+    // Vérifier si le montant du retrait est supérieur à 1$
+    if (retraitAmount < 1) {
+        alert("Le montant minimum pour un retrait est 1$.");
+        return;
+    }
+
+    // Récupérer les informations du solde, des retraits et de la date du dernier retrait
+    let balance = parseFloat(localStorage.getItem('balance')) || 0;
+    let withdrawalCount = parseInt(localStorage.getItem('withdrawalCount')) || 0;
+    let lastWithdrawalDate = localStorage.getItem('lastWithdrawalDate');
+    let totalDeposit = parseFloat(localStorage.getItem('totalDeposit')) || 0;
+
+    let today = new Date().toISOString().split('T')[0]; // Date du jour
+
+    // Vérifier si un retrait a déjà été effectué aujourd'hui
+    if (lastWithdrawalDate === today) {
+        alert("Vous ne pouvez effectuer qu'un seul retrait par jour.");
+        return;
+    }
+
+    // Conditions de retrait selon le nombre de retraits
+    let maxRetrait = 0;
+
+    if (withdrawalCount === 0) {
+        maxRetrait = balance * 0.5; // Premier retrait: 50% des gains
+    } else if (withdrawalCount === 1) {
+        maxRetrait = balance * 0.25; // Deuxième retrait: 25% des gains
+    } else if (withdrawalCount === 2) {
+        maxRetrait = balance * 0.1; // Troisième retrait: 10% des gains
+    } else {
+        if (totalDeposit < 10) { // Après 3 retraits, dépôt minimum de 10$ requis
+            alert("Vous devez faire un dépôt d'au moins 10$ avant de pouvoir retirer à nouveau.");
+            return;
         }
+        maxRetrait = balance * 0.5; // Après 3 retraits et dépôt, 50% des gains
+    }
 
-        function afficherConnexion() {
-            document.getElementById("connexionForm").style.display = "block";
+    // Vérifier si le montant du retrait dépasse la limite autorisée
+    if (retraitAmount > maxRetrait) {
+        alert("Le montant du retrait dépasse la limite autorisée: " + maxRetrait.toFixed(2) + "$.");
+        return;
+    }
+
+    // Effectuer le retrait et mettre à jour les informations
+    balance -= retraitAmount;
+    withdrawalCount++;
+    localStorage.setItem('balance', balance);
+    localStorage.setItem('withdrawalCount', withdrawalCount);
+    localStorage.setItem('lastWithdrawalDate', today); // Enregistrer la date du dernier retrait
+
+    // Générer un code de transaction et ajouter au tableau des transactions
+    let transactionCode = generateTransactionCode();
+    addTransaction(transactionCode, 'Client', retraitAmount, 'Retrait', payeerAddress);
+
+    // Masquer le formulaire de retrait et afficher un message de confirmation
+    document.getElementById("form_retrait").style.display = "none";
+    alert("Retrait ajouté au tableau. Veuillez confirmer.");
+}
+
+// Handle Deposit submission
+function submitDepot() {
+    let depositAmount = parseFloat(document.getElementById("depot_amount").value);
+
+    if (depositAmount < 1) {
+        alert("Le montant minimum de dépôt est 1$.");
+        return;
+    }
+
+    // Mettre à jour le solde et le total des dépôts
+    let balance = parseFloat(localStorage.getItem('balance')) || 0;
+    let totalDeposit = parseFloat(localStorage.getItem('totalDeposit')) || 0;
+
+    balance += depositAmount;
+    totalDeposit += depositAmount;
+
+    localStorage.setItem('balance', balance);
+    localStorage.setItem('totalDeposit', totalDeposit);
+    localStorage.setItem('withdrawalCount', 0); // Réinitialiser les retraits après un dépôt
+
+    alert("Dépôt effectué avec succès! Vous pouvez maintenant effectuer un retrait.");
+}
+
+// Display Transactions in Admin Table
+function addTransaction(code, clientName, amount, type, payeerInfo) {
+    let transaction = { code, clientName, amount, type, payeerInfo };
+    transactions.push(transaction);
+    localStorage.setItem('transactions', JSON.stringify(transactions));  // Save transactions to localStorage
+    renderTransactions();  // Re-render the transactions table
+}
+
+// Render Transactions from localStorage
+function renderTransactions() {
+    let table = document.getElementById("admin_table");
+    table.innerHTML = '';  // Clear the table before re-rendering
+    let headerRow = table.insertRow();
+    headerRow.innerHTML = `
+        <th>Code Transaction</th>
+        <th>Nom du Client</th>
+        <th>Montant</th>
+        <th>Type</th>
+        <th>Compte Payeer</th>
+        <th>Action</th>
+    `;
+    
+    transactions.forEach((transaction) => {
+        let row = table.insertRow();
+        row.innerHTML = `
+            <td>${transaction.code}</td>
+            <td>${transaction.clientName}</td>
+            <td>${transaction.amount}$ (${transaction.type})</td>
+            <td>${transaction.type}</td>
+            <td>${transaction.payeerInfo}</td>
+            <td><button onclick="confirmTransaction(this)">Confirmer</button></td>
+        `;
+    });
+}
+
+// Confirm Transaction
+function confirmTransaction(button) {
+    let row = button.parentNode.parentNode;
+    let code = row.cells[0].innerText;
+    let amount = parseFloat(row.cells[2].innerText.split(' ')[0]);
+    let type = row.cells[2].innerText.split('(')[1].split(')')[0];
+
+    if (type === 'Depot') {
+        balance += amount;
+        localStorage.setItem('balance', balance);
+        document.getElementById("balance_amount").innerText = balance.toFixed(2) + "$";
+    } else if (type === 'Retrait') {
+        if (balance >= amount) {
+            let fee = amount * 0.1; // 10% frais
+            let finalAmount = amount + fee;
+            balance -= finalAmount;
+            localStorage.setItem('balance', balance);
+            document.getElementById("balance_amount").innerText = balance.toFixed(2) + "$";
+            alert("Retrait confirmé avec frais de 10%. Nouveau solde: " + balance.toFixed(2) + "$");
+        } else {
+            alert("Solde insuffisant pour ce retrait.");
         }
+    }
+    transactions = transactions.filter(transaction => transaction.code !== code);  // Remove confirmed transaction
+    localStorage.setItem('transactions', JSON.stringify(transactions));  // Save updated transactions to localStorage
+    renderTransactions();  // Re-render the transactions table
+}
 
-        function connecter() {
-            let email = document.getElementById("loginEmail").value;
-            let password = document.getElementById("loginPassword").value;
-            let rememberMe = document.getElementById("rememberMe").checked;
+// Check Access Code to Show the Tableau
+function checkAccessCode() {
+    const code = document.getElementById("access_code").value;
+    const validCode = "1234";  // Replace with your actual access code
 
-            let utilisateurs = JSON.parse(localStorage.getItem("utilisateurs")) || [];
-            let utilisateur = utilisateurs.find(user => user.email === email && user.password === password);
+    if (code === validCode) {
+        document.getElementById("admin_table").style.display = "block"; // Show the table
+        alert("Accès autorisé au tableau des transactions.");
+    } else {
+        alert("Code d'accès incorrect. Accès refusé.");
+    }
+}
 
-            if (utilisateur) {
-                alert("Connexion réussie! Bienvenue, " + utilisateur.nom);
-                
-                if (rememberMe) {
-                    localStorage.setItem("sessionUser", JSON.stringify(utilisateur));
-                } else {
-                    sessionStorage.setItem("sessionUser", JSON.stringify(utilisateur));
-                }
+// Start Work (1.5% on balance after 10 seconds) with daily limit
+function startWork() {
+    let lastWorkDate = localStorage.getItem('lastWorkDate');
+    let currentDate = new Date().toLocaleDateString(); // Format: "MM/DD/YYYY"
 
-                window.location.href = "https://site-web-asa-en-ligne-m-da-6fzi.vercel.app/";
-            } else {
-                alert("Email ou mot de passe incorrect!");
-            }
-        }
+    if (lastWorkDate === currentDate) {
+        alert("Vous avez déjà démarré le travail aujourd'hui. Veuillez réessayer demain.");
+        return;
+    }
 
-        function deconnecter() {
-            localStorage.removeItem("sessionUser");
-            sessionStorage.removeItem("sessionUser");
-            alert("Déconnexion réussie!");
-            location.reload();
-        }
-    </script>
+    document.getElementById("work_status").style.display = "block";
+    setTimeout(function() {
+        document.getElementById("work_status").style.display = "none";
+        addToBalance();
+        localStorage.setItem('lastWorkDate', currentDate);  // Set the last work date
+    }, 10000); // 10 seconds delay
+}
+
+// Add 1.5% to Balance after work
+function addToBalance() {
+    let amountToAdd = calculateDailyGains();
+    balance += amountToAdd;
+    localStorage.setItem('balance', balance);
+    document.getElementById("balance_amount").innerText = balance.toFixed(2) + "$";
+}
+
+// Initial render of transactions when page loads
+renderTransactions();
+</script>
 
 </body>
 </html>
